@@ -1,0 +1,40 @@
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  monitoring:
+    driver: bridge
+
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    restart: unless-stopped
+    volumes:
+      - "./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "prometheus_data:/prometheus"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    restart: unless-stopped
+    volumes:
+      - "grafana_data:/var/lib/grafana"
+      - "./config/grafana:/etc/grafana/provisioning/datasources"
+    ports:
+      - "3030:3000"
+    networks:
+      - monitoring
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
