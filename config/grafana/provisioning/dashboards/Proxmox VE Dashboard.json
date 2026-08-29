@@ -5,8 +5,8 @@
     "name": "sys-ops-id",
     "namespace": "default",
     "uid": "bea8cc5f-5ffc-492f-9f84-15ff17687948",
-    "resourceVersion": "1787990768240985",
-    "generation": 17,
+    "resourceVersion": "1787998215040987",
+    "generation": 18,
     "creationTimestamp": "2026-08-28T13:50:03Z",
     "labels": {
       "grafana.app/deprecatedInternalID": "3665077620686848"
@@ -15,7 +15,7 @@
       "grafana.app/createdBy": "anonymous:0",
       "grafana.app/saved-from-ui": "Grafana v13.2.0 (f681b1359f)",
       "grafana.app/updatedBy": "anonymous:0",
-      "grafana.app/updatedTimestamp": "2026-08-29T08:06:08Z"
+      "grafana.app/updatedTimestamp": "2026-08-29T10:10:15Z"
     }
   },
   "spec": {
@@ -505,7 +505,8 @@
                         }
                       },
                       {
-                        "id": "custom.width"
+                        "id": "custom.width",
+                        "value": 140
                       },
                       {
                         "id": "custom.cellOptions",
@@ -903,6 +904,10 @@
                       {
                         "id": "custom.align",
                         "value": "center"
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 185
                       }
                     ]
                   },
@@ -969,6 +974,10 @@
                       {
                         "id": "custom.align",
                         "value": "center"
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 187
                       }
                     ]
                   }
