@@ -1,0 +1,14 @@
+apiVersion: 1
+
+datasources:
+  - name: influxdb
+    type: influxdata-influxdb-datasource
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    jsonData:
+      version: Flux
+      organization: "proxmox"
+      defaultBucket: "proxmox"
+    secureJsonData:
+      token: "my-super-secret-auth-token"
