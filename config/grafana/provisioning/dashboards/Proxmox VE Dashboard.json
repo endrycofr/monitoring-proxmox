@@ -5,8 +5,8 @@
     "name": "sys-ops-id",
     "namespace": "default",
     "uid": "bea8cc5f-5ffc-492f-9f84-15ff17687948",
-    "resourceVersion": "1787998215040987",
-    "generation": 18,
+    "resourceVersion": "1788014177582006",
+    "generation": 22,
     "creationTimestamp": "2026-08-28T13:50:03Z",
     "labels": {
       "grafana.app/deprecatedInternalID": "3665077620686848"
@@ -15,7 +15,7 @@
       "grafana.app/createdBy": "anonymous:0",
       "grafana.app/saved-from-ui": "Grafana v13.2.0 (f681b1359f)",
       "grafana.app/updatedBy": "anonymous:0",
-      "grafana.app/updatedTimestamp": "2026-08-29T10:10:15Z"
+      "grafana.app/updatedTimestamp": "2026-08-29T14:36:17Z"
     }
   },
   "spec": {
@@ -1450,6 +1450,7 @@
               "fieldConfig": {
                 "defaults": {
                   "displayName": "${__field.labels.host} ${__field.labels.nodename}",
+                  "unit": "percentunit",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -1501,7 +1502,32 @@
                     }
                   }
                 },
-                "overrides": []
+                "overrides": [
+                  {
+                    "__systemRef": "hideSeriesFrom",
+                    "matcher": {
+                      "id": "byNames",
+                      "options": {
+                        "mode": "exclude",
+                        "names": [
+                          "Dokploy n3"
+                        ],
+                        "prefix": "All except:",
+                        "readOnly": true
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom",
+                        "value": {
+                          "legend": false,
+                          "tooltip": true,
+                          "viz": true
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             }
           }
