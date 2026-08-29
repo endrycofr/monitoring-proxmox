@@ -5,8 +5,8 @@
     "name": "sys-ops-id",
     "namespace": "default",
     "uid": "bea8cc5f-5ffc-492f-9f84-15ff17687948",
-    "resourceVersion": "1788014177582006",
-    "generation": 22,
+    "resourceVersion": "1788015109013003",
+    "generation": 28,
     "creationTimestamp": "2026-08-28T13:50:03Z",
     "labels": {
       "grafana.app/deprecatedInternalID": "3665077620686848"
@@ -15,7 +15,7 @@
       "grafana.app/createdBy": "anonymous:0",
       "grafana.app/saved-from-ui": "Grafana v13.2.0 (f681b1359f)",
       "grafana.app/updatedBy": "anonymous:0",
-      "grafana.app/updatedTimestamp": "2026-08-29T14:36:17Z"
+      "grafana.app/updatedTimestamp": "2026-08-29T14:51:49Z"
     }
   },
   "spec": {
@@ -1077,179 +1077,6 @@
           }
         }
       },
-      "panel-21": {
-        "kind": "Panel",
-        "spec": {
-          "id": 21,
-          "title": "Host CPU usage",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "efwjl0pwmez9cb"
-                      },
-                      "spec": {
-                        "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"cpu\"\n  )\n  |> filter(fn: (r) => r[\"host\"] =~ /${server:regex}/)\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({\n        r with\n        _time: r._time,\n        _value: float(v: r._value) * float(v: 100)\n      })\n    )\n"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "efwjl0pwmez9cb"
-                      },
-                      "spec": {
-                        "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"wait\"\n  )\n  |> filter(fn: (r) => r[\"host\"] =~ /${server:regex}/)\n  |> map(fn: (r) => ({\n        r with\n        _time: r._time,\n        _value: float(v: r._value) * float(v: 100)\n      })\n    )\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)"
-                      }
-                    },
-                    "refId": "B",
-                    "hidden": false
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "efwjl0pwmez9cb"
-                      },
-                      "spec": {
-                        "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"avg1\"\n  )\n  |> filter(fn: (r) => r[\"host\"] =~ /${server:regex}/)\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)"
-                      }
-                    },
-                    "refId": "C",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "13.2.0",
-            "spec": {
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "multi",
-                  "sort": "none"
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "percent",
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 80,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "Percent",
-                    "axisPlacement": "left",
-                    "axisWidth": 2,
-                    "barAlignment": 0,
-                    "barWidthFactor": 0.6,
-                    "drawStyle": "line",
-                    "fillOpacity": 10,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineWidth": 2,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "never",
-                    "showValues": false,
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "avg1"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.axisPlacement",
-                        "value": "right"
-                      },
-                      {
-                        "id": "custom.axisLabel",
-                        "value": "Loadavg"
-                      },
-                      {
-                        "id": "unit",
-                        "value": "short"
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        }
-      },
       "panel-24": {
         "kind": "Panel",
         "spec": {
@@ -1362,32 +1189,7 @@
                     }
                   }
                 },
-                "overrides": [
-                  {
-                    "__systemRef": "hideSeriesFrom",
-                    "matcher": {
-                      "id": "byNames",
-                      "options": {
-                        "mode": "exclude",
-                        "names": [
-                          "memtotal {host=\"n1\", object=\"nodes\"}"
-                        ],
-                        "prefix": "All except:",
-                        "readOnly": true
-                      }
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.hideFrom",
-                        "value": {
-                          "legend": false,
-                          "tooltip": true,
-                          "viz": true
-                        }
-                      }
-                    ]
-                  }
-                ]
+                "overrides": []
               }
             }
           }
@@ -1502,32 +1304,7 @@
                     }
                   }
                 },
-                "overrides": [
-                  {
-                    "__systemRef": "hideSeriesFrom",
-                    "matcher": {
-                      "id": "byNames",
-                      "options": {
-                        "mode": "exclude",
-                        "names": [
-                          "Dokploy n3"
-                        ],
-                        "prefix": "All except:",
-                        "readOnly": true
-                      }
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.hideFrom",
-                        "value": {
-                          "legend": false,
-                          "tooltip": true,
-                          "viz": true
-                        }
-                      }
-                    ]
-                  }
-                ]
+                "overrides": []
               }
             }
           }
@@ -2116,6 +1893,190 @@
           }
         }
       },
+      "panel-36": {
+        "kind": "Panel",
+        "spec": {
+          "id": 36,
+          "title": " Host CPU",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efwjl0pwmez9cb"
+                      },
+                      "spec": {
+                        "query": "from(bucket: \"proxmox\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"cpu\"\n  )\n  |> filter(fn: (r) => r[\"host\"] =~ /(n1|n2|n3|n4)/)\n  |> map(fn: (r) => ({\n        r with\n        _time: r._time,\n        _value: float(v: r._value) * float(v: 100)\n      })\n    )\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efwjl0pwmez9cb"
+                      },
+                      "spec": {
+                        "query": "from(bucket: \"proxmox\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"wait\"\n  )\n  |> filter(fn: (r) => r[\"host\"] =~ /(n1|n2|n3|n4)/)\n  |> map(fn: (r) => ({\n        r with\n        _time: r._time,\n        _value: float(v: r._value)\n      })\n    )\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)"
+                      }
+                    },
+                    "refId": "B",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efwjl0pwmez9cb"
+                      },
+                      "spec": {
+                        "query": "from(bucket: \"proxmox\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"avg1\"\n  )\n  |> filter(fn: (r) => r[\"host\"] =~ /(n1|n2|n3|n4)/)\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)"
+                      }
+                    },
+                    "refId": "C",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efwjl0pwmez9cb"
+                      },
+                      "spec": {
+                        "key": "Q-3c4270a2-bb5b-4287-a8e8-45ae06c4894b-3"
+                      }
+                    },
+                    "refId": "D",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efwjl0pwmez9cb"
+                      },
+                      "spec": {
+                        "key": "Q-1e00c66b-1490-48ee-bb4d-5a7f63da10f2-4"
+                      }
+                    },
+                    "refId": "E",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.2.0",
+            "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "percent",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
       "panel-4": {
         "kind": "Panel",
         "spec": {
@@ -2607,7 +2568,7 @@
                         "height": 9,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-21"
+                          "name": "panel-36"
                         }
                       }
                     },
@@ -2721,7 +2682,7 @@
     ],
     "timeSettings": {
       "timezone": "browser",
-      "from": "now-5m",
+      "from": "now-15m",
       "to": "now",
       "autoRefresh": "10s",
       "autoRefreshIntervals": [
@@ -2799,7 +2760,9 @@
         "spec": {
           "name": "server",
           "current": {
-            "text": "All",
+            "text": [
+              "All"
+            ],
             "value": [
               "$__all"
             ]
