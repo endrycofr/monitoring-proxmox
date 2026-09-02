@@ -6,6 +6,13 @@ Sistem ini dapat digunakan untuk memantau penggunaan **CPU, RAM, Network, storag
 
 ---
 
+<p align="center">
+  <img src="img/dashboard-grafana.png" alt="Dashboard" width="100%">
+</p>
+
+
+---
+
 ## 🏗️ Arsitektur Sistem
 
 ```
@@ -332,6 +339,7 @@ Namun, perlu diingat bahwa **tidak ada jaminan notifikasi Telegram akan diterima
 ---
 
 # 🧪 9. Checklist Deployment
+
 
 Gunakan checklist berikut setelah instalasi:
 
