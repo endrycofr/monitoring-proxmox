@@ -8,14 +8,14 @@ services:
       - "8086:8086"
     volumes:
       - influxdb_data:/var/lib/influxdb2
-      # - ./config/influxdb/config.yml:/etc/influxdb2/config.yml:ro
+      - ./config/influxdb:/etc/influxdb2
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=admin
       - DOCKER_INFLUXDB_INIT_PASSWORD=AdminPassword123!
       - DOCKER_INFLUXDB_INIT_ORG=my-org
       - DOCKER_INFLUXDB_INIT_BUCKET=proxmox
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token # Simpan token ini
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
     networks:
       - monitoring
 
@@ -27,7 +27,7 @@ services:
       - "3030:3000"
     volumes:
       - grafana_data:/var/lib/grafana
-      # - ./config/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
