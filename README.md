@@ -65,7 +65,7 @@ Bucket       : proxmox
 
 ### 1.2 Membuat API Token
 
-Buat API Token yang memiliki permission:
+Buat API Token di InfluxDB yang memiliki permission:
 
 ```text
 Read  → proxmox
