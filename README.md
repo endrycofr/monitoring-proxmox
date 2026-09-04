@@ -18,7 +18,7 @@ Sistem ini dapat digunakan untuk memantau penggunaan **CPU, RAM, Network, storag
 ```
 ┌────────────────┐      Metrics (v2 / Flux)      ┌──────────────┐
 │  Proxmox VE    │ ────────────────────────────> │   InfluxDB   │
-│   Hypervisor   │      Port 8086 / HTTP          │  (Time-Series)│
+│   Hypervisor   │      Port 8086 / HTTP         │ (Time-Series)│
 └────────────────┘                               └──────┬───────┘
                                                         │
                                                         │ Query (Flux)
