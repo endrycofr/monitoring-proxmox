@@ -1915,7 +1915,7 @@
                         "name": "efwjl0pwmez9cb"
                       },
                       "spec": {
-                        "query": "from(bucket: \"proxmox\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"cpu\"\n  )\n  |> filter(fn: (r) => r[\"host\"] =~ /(n1|n2|n3|n4)/)\n  |> map(fn: (r) => ({\n        r with\n        _time: r._time,\n        _value: float(v: r._value) * float(v: 100)\n      })\n    )\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n"
+                        "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wait\")\n  |> filter(fn: (r) => r[\"host\"] =~ /${server:regex}/)\n//  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
                       }
                     },
                     "refId": "A",
@@ -1933,7 +1933,7 @@
                         "name": "efwjl0pwmez9cb"
                       },
                       "spec": {
-                        "query": "from(bucket: \"proxmox\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"wait\"\n  )\n  |> filter(fn: (r) => r[\"host\"] =~ /(n1|n2|n3|n4)/)\n  |> map(fn: (r) => ({\n        r with\n        _time: r._time,\n        _value: float(v: r._value)\n      })\n    )\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)"
+                        "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wait\")\n  |> filter(fn: (r) => r[\"host\"] =~ /${server:regex}/)\n//  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
                       }
                     },
                     "refId": "B",
@@ -1951,7 +1951,7 @@
                         "name": "efwjl0pwmez9cb"
                       },
                       "spec": {
-                        "query": "from(bucket: \"proxmox\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"avg1\"\n  )\n  |> filter(fn: (r) => r[\"host\"] =~ /(n1|n2|n3|n4)/)\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)"
+                        "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wait\")\n  |> filter(fn: (r) => r[\"host\"] =~ /${server:regex}/)\n//  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
                       }
                     },
                     "refId": "C",
