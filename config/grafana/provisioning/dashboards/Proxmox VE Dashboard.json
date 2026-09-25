@@ -2,9 +2,9 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "sys-ops-id",
-    "generation": 1,
-    "creationTimestamp": "2026-09-09T09:19:26Z",
+    "name": "glhcdgq",
+    "generation": 4,
+    "creationTimestamp": "2026-09-09T09:21:31Z",
     "labels": {},
     "annotations": {}
   },
@@ -22,9 +22,6 @@
               "matchAny": false,
               "tags": [],
               "type": "dashboard"
-            },
-            "labels": {
-              "grafana.app/export-label": "grafana-1"
             }
           },
           "enable": true,
@@ -59,9 +56,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"memory\" and\n    r._field == \"memused\"\n  )\n  |> filter(fn: (r) => r[\"host\"] == \"${server}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({\n        r with\n        _value: float(v: r._value) / 1073741824.0\n      })\n    )\n  |> last()"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -76,7 +70,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "colorMode": "background",
@@ -148,9 +142,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"wait\"\n  )\n  |> filter(fn: (r) => r[\"host\"] == \"${server}\")\n  |> aggregateWindow(every: v.windowPeriod, fn:mean, createEmpty: false)"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -165,7 +156,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "colorMode": "background",
@@ -238,9 +229,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"system\")\n  |> filter(fn: (r) => r._field == \"avail\" or r._field == \"used\")\n  |> filter(fn: (r) => r[\"nodename\"] == \"${server}\")\n  |> last()\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with \n    _time: r._time,\n    _measurement: r.measurement,\n    _field: \"used_perc\",\n    _value: float(v: 100) / (float(v: r.avail) + float(v: r.used)) * float(v:r.used)\n     }))\n  |> drop(columns: [\"avail\",\"used\"])\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -255,7 +243,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "bargauge",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "displayMode": "gradient",
@@ -335,9 +323,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "// 1. Ambil metrik angka (snapshot terakhir)\nnumeric_data = from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\" or r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")\n  |> filter(fn: (r) => r[\"nodename\"] =~ /${server:regex}/)\n  |> filter(fn: (r) => r[\"_field\"] == \"cpus\" or r[\"_field\"] == \"cpu\" or r[\"_field\"] == \"uptime\" or r[\"_field\"] == \"maxmem\" or r[\"_field\"] == \"mem\" or r[\"_field\"] == \"maxdisk\")\n  |> last()\n  |> map(fn: (r) => ({ r with _value: float(v: r._value) }))\n  |> pivot(rowKey: [\"host\", \"nodename\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n\n// 2. Ambil metrik teks (Status & Name)\ntext_data = from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")\n  |> filter(fn: (r) => r[\"nodename\"] =~ /${server:regex}/)\n  |> filter(fn: (r) => r[\"_field\"] == \"status\" or r[\"_field\"] == \"name\")\n  |> last()\n  |> map(fn: (r) => ({ r with _value: string(v: r._value) }))\n  |> pivot(rowKey: [\"host\", \"nodename\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n\n// 3. Hitung Rata-rata (MEAN) IO Read & Write (MB/s)\nio_data = from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"_field\"] == \"diskread\" or r[\"_field\"] == \"diskwrite\")\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")\n  |> filter(fn: (r) => r[\"nodename\"] =~ /${server:regex}/)\n  |> group(columns: [\"host\", \"nodename\", \"_field\"])\n  |> sort(columns: [\"_time\"])\n  |> derivative(unit: 1s, nonNegative: true)\n  |> map(fn: (r) => ({ r with _value: r._value / 1048576.0 }))  // bytes/s -> MB/s\n  |> mean() // <-- Menggunakan mean() untuk mendapatkan rata-rata\n  |> pivot(rowKey: [\"host\", \"nodename\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n\n// 4. Gabungkan semua data\njoin1 = join(tables: {num: numeric_data, txt: text_data}, on: [\"host\", \"nodename\"])\nfinal = join(tables: {j: join1, io: io_data}, on: [\"host\", \"nodename\"])\n\n// 5. Output ke tabel\nfinal\n  |> map(fn: (r) => ({\n      ID: r.host,\n      \"VM Name\": if exists r.name and r.name != \"\" then r.name else r.host,\n      Status: if exists r.status then r.status else \"unknown\",\n      Node: r.nodename,\n      Type: \"qemu\",\n      CPU: if exists r.cpus then int(v: r.cpus) else 0,\n      RAM: if exists r.maxmem then r.maxmem else 0.0,\n      Disk: if exists r.maxdisk then r.maxdisk else 0.0,\n      Uptime: if exists r.uptime then int(v: r.uptime) else 0,\n      \"CPU usage\": if exists r.cpu then r.cpu else 0.0,\n      \"RAM usage\": if exists r.mem and exists r.maxmem and r.maxmem > 0.0 \n                   then (r.mem / r.maxmem) * 100.0 \n                   else 0.0,\n      \"IO Read (MB/s)\": if exists r.diskread then r.diskread else 0.0,\n      \"IO Write (MB/s)\": if exists r.diskwrite then r.diskwrite else 0.0\n    }))\n  |> group()\n  |> keep(columns: [\"ID\", \"VM Name\", \"CPU usage\", \"RAM usage\", \"IO Read (MB/s)\", \"IO Write (MB/s)\", \"Node\", \"Status\"])"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -348,7 +333,7 @@
               "transformations": [
                 {
                   "kind": "Transformation",
-                  "group": "organize",
+                  "group": "Transformation",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -394,7 +379,7 @@
                 },
                 {
                   "kind": "Transformation",
-                  "group": "sortBy",
+                  "group": "Transformation",
                   "spec": {
                     "options": {
                       "fields": {},
@@ -405,6 +390,29 @@
                       ]
                     }
                   }
+                },
+                {
+                  "kind": "Transformation",
+                  "group": "organize",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {
+                        "ID": true
+                      },
+                      "includeByName": {},
+                      "indexByName": {
+                        "CPU usage": 2,
+                        "ID": 1,
+                        "IO Read (MB/s)": 4,
+                        "IO Write (MB/s)": 5,
+                        "Node": 6,
+                        "RAM usage": 3,
+                        "Status": 7,
+                        "VM Name": 0
+                      },
+                      "renameByName": {}
+                    }
+                  }
                 }
               ],
               "queryOptions": {}
@@ -413,11 +421,17 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "table",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "cellHeight": "sm",
-                "showHeader": true
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "ID"
+                  }
+                ]
               },
               "fieldConfig": {
                 "defaults": {
@@ -524,7 +538,7 @@
                     "properties": [
                       {
                         "id": "custom.width",
-                        "value": 40
+                        "value": 100
                       },
                       {
                         "id": "color",
@@ -619,7 +633,7 @@
                       },
                       {
                         "id": "custom.width",
-                        "value": 80
+                        "value": 100
                       },
                       {
                         "id": "custom.cellOptions",
@@ -835,7 +849,6 @@
                   {
                     "matcher": {
                       "id": "byName",
-                      "scope": "series",
                       "options": "IO Read (MB/s)"
                     },
                     "properties": [
@@ -904,7 +917,6 @@
                   {
                     "matcher": {
                       "id": "byName",
-                      "scope": "series",
                       "options": "IO Write (MB/s)"
                     },
                     "properties": [
@@ -997,9 +1009,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"cpu\"\n  )\n  |> filter(fn: (r) => r[\"host\"] == \"${server}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1014,7 +1023,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "colorMode": "background",
@@ -1087,9 +1096,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"memory\")\n  |> filter(fn: (r) => r[\"_field\"] == \"memtotal\" or r[\"_field\"] == \"memused\")\n  |> filter(fn: (r) => r[\"host\"] =~ /${server:regex}/)\n//  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1104,7 +1110,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "legend": {
@@ -1205,9 +1211,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"_field\"] == \"cpu\")\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")\n  |> filter(fn: (r) => r[\"_value\"] > 0)\n  |> filter(fn: (r) => r[\"nodename\"] =~ /${server:regex}/)\n  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n//  |> yield(name: \"mean\")\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1222,7 +1225,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "legend": {
@@ -1320,9 +1323,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "mem = from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mem\")\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")\n  |> filter(fn: (r) => r[\"_value\"] > 0)\n  |> filter(fn: (r) => r[\"nodename\"] =~ /^${server:regex}$/)\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n\nmaxmem = from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"_field\"] == \"maxmem\")\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")\n  |> filter(fn: (r) => r[\"_value\"] > 0)\n  |> filter(fn: (r) => r[\"nodename\"] =~ /^${server:regex}$/)\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n\njoin(\n    tables: {mem:mem, maxmem:maxmem},\n    on: [\"_time\",\"_stop\",\"_start\",\"host\",\"nodename\"]\n\n)\n\n|> map(fn: (r) => ({\n      _time: r._time,\n      _value: float(v:r._value_mem) / float(v:r._value_maxmem) * float(v:100),\n      host: r.host,\n      nodename: r.nodename\n    })\n  )\n\n|> group(columns: [\"host\",\"nodename\"], mode: \"by\")"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1337,7 +1337,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "legend": {
@@ -1437,9 +1437,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"_field\"] == \"diskread\")\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")\n  |> filter(fn: (r) => r[\"_value\"] > 0)\n  |> filter(fn: (r) => r[\"nodename\"] =~ /${server:regex}/)\n  |> group(columns: [\"host\",\"nodename\"], mode:\"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> derivative(unit: 1s)\n//  |> yield(name: \"mean\")\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1454,7 +1451,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "legend": {
@@ -1555,9 +1552,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"_field\"] == \"diskwrite\")\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")\n  |> filter(fn: (r) => r[\"_value\"] > 0)\n  |> filter(fn: (r) => r[\"nodename\"] =~ /${server:regex}/)\n  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> derivative(unit: 1s)\n//  |> yield(name: \"mean\")\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1572,7 +1566,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "legend": {
@@ -1673,9 +1667,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"_field\"] == \"netin\")\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")\n  |> filter(fn: (r) => r[\"_value\"] > 0)\n  |> filter(fn: (r) => r[\"nodename\"] =~ /${server:regex}/)\n  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> derivative(unit: 1s, nonNegative: true)\n//  |> yield(name: \"mean\")\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1690,7 +1681,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "legend": {
@@ -1788,9 +1779,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"_field\"] == \"netout\")\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")\n  |> filter(fn: (r) => r[\"_value\"] > 0)\n  |> filter(fn: (r) => r[\"nodename\"] =~ /${server:regex}/)\n  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> derivative(unit: 1s, nonNegative: true)\n//  |> yield(name: \"mean\")\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1805,7 +1793,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "legend": {
@@ -1903,9 +1891,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wait\")\n  |> filter(fn: (r) => r[\"host\"] =~ /${server:regex}/)\n//  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1921,9 +1906,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wait\")\n  |> filter(fn: (r) => r[\"host\"] =~ /${server:regex}/)\n//  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "B",
@@ -1939,9 +1921,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wait\")\n  |> filter(fn: (r) => r[\"host\"] =~ /${server:regex}/)\n//  |> group(columns: [\"host\",\"nodename\"], mode: \"by\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "C",
@@ -1957,9 +1936,6 @@
                       "version": "v0",
                       "spec": {
                         "key": "Q-3c4270a2-bb5b-4287-a8e8-45ae06c4894b-3"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "D",
@@ -1975,9 +1951,6 @@
                       "version": "v0",
                       "spec": {
                         "key": "Q-1e00c66b-1490-48ee-bb4d-5a7f63da10f2-4"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "E",
@@ -1992,7 +1965,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "legend": {
@@ -2087,9 +2060,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"cpus\"\n  )\n  |> filter(fn: (r) => r[\"host\"] == \"${server}\")\n  |> limit(n:1)"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -2104,7 +2074,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "colorMode": "background",
@@ -2165,9 +2135,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpustat\" and\n    r._field == \"avg1\"\n  )\n  |> filter(fn: (r) => r[\"host\"] == \"${server}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -2182,7 +2149,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "colorMode": "background",
@@ -2248,9 +2215,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"memory\" and\n    r._field == \"memtotal\"\n  )\n  |> filter(fn: (r) => r[\"host\"] == \"${server}\")\n  |> limit(n:1)"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -2265,7 +2229,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "colorMode": "background",
@@ -2327,9 +2291,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"memory\" and\n    r._field == \"swaptotal\"\n  )\n  |> filter(fn: (r) => r[\"host\"] == \"${server}\")\n  |> limit(n:1)"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -2344,7 +2305,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.2.0",
+            "version": "13.2.1",
             "spec": {
               "options": {
                 "colorMode": "background",
@@ -2667,8 +2628,7 @@
     "tags": [
       "InfluxDB",
       "Proxmox",
-      "Grafana",
-      "sys-ops.id"
+      "Grafana"
     ],
     "timeSettings": {
       "timezone": "browser",
@@ -2730,9 +2690,6 @@
             "version": "v0",
             "spec": {
               "__legacyStringValue": "buckets()"
-            },
-            "labels": {
-              "grafana.app/export-label": "influxdb-1"
             }
           },
           "regex": "",
@@ -2763,9 +2720,6 @@
             "version": "v0",
             "spec": {
               "__legacyStringValue": "from(bucket: \"${Bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => \n    r._measurement == \"system\" and\n    r.object == \"nodes\"\n  )\n  |> keyValues(keyColumns: [\"host\"])\n  |> group()\n  |> keep(columns: [\"host\"])\n  |> distinct(column: \"host\")\n\n"
-            },
-            "labels": {
-              "grafana.app/export-label": "influxdb-1"
             }
           },
           "regex": "",
