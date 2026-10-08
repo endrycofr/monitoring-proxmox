@@ -2650,7 +2650,7 @@
       "hideTimepicker": false,
       "fiscalYearStartMonth": 0
     },
-    "title": "Proxmox SBY",
+    "title": "Proxmox VE",
     "variables": [
       {
         "kind": "DatasourceVariable",
