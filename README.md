@@ -79,6 +79,7 @@ Tambahkan input plugin untuk Ceph:
   organization = "<ORG>"
   bucket = "ceph"
 ```
+jika tidak memakai docker maka harus , instal telegraf satu-persatu di semua node dan ikuti https://docs.ceph.com/en/latest/mgr/telegraf/
 
 Restart telegraf:
 ```bash
